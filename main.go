@@ -2,12 +2,14 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/sirupsen/logrus"
+	"github.com/xanzy/go-gitlab"
 )
 
 func getEnv(name string) string {
@@ -44,6 +46,10 @@ func main() {
 	listendAddr := getEnvDefault("HTTP_LISTENADDR", ":9111")
 
 	// create gitlab client
+	git, err := gitlab.NewClient(gitlabToken, gitlab.WithBaseURL(gitlabAPIURL))
+	if err != nil {
+		log.Fatalf("Failed to create client: %v", err)
+	}
 
 	// set gauges
 	setGauge("block_count", "The local blockchain length", func() float64 {

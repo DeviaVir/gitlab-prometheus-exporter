@@ -5,5 +5,5 @@ your Gitlab API.
 ## Docker
 
 ```
-docker run -p 9115:9115 -e GITLAB_API=http://web.gitlab.svc/api -e GITLAB_TOKEN=some-token -e HTTP_LISTENADDR=":9115" -it --rm deviavir/gitlab-prometheus-exporter:latest
+docker run -p 9115:9115 -e GITLAB_API=http://web.gitlab.svc/api/v4 -e GITLAB_TOKEN=some-token -e HTTP_LISTENADDR=":9115" -it --rm deviavir/gitlab-prometheus-exporter:latest
 ```
