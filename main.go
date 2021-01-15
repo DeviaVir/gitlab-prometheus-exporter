@@ -51,27 +51,21 @@ func main() {
 		log.Fatalf("Failed to create client: %v", err)
 	}
 
+	// grab license
+	license, _, err := git.License.GetLicense()
+	if err != nil {
+		log.Fatalf("Failed to grab license")
+	}
+
 	// set gauges
-	setGauge("block_count", "The local blockchain length", func() float64 {
-		blockCount, err := client.GetBlockCount()
-		if err != nil {
-			panic(err)
-		}
-		return float64(blockCount)
+	setGauge("license_active_users", "License active users", func() float64 {
+		return float64(license.ActiveUsers)
 	})
-	setGauge("raw_mempool_size", "The number of txes in rawmempool", func() float64 {
-		hashes, err := client.GetRawMempool()
-		if err != nil {
-			panic(err)
-		}
-		return float64(len(hashes))
+	setGauge("license_overage", "Users outside of the license", func() float64 {
+		return float64(license.Overage)
 	})
-	setGauge("connected_peers", "The number of connected peers", func() float64 {
-		peerInfo, err := client.GetPeerInfo()
-		if err != nil {
-			panic(err)
-		}
-		return float64(len(peerInfo))
+	setGauge("license_user_limit", "Number of active users allowed inside the license", func() float64 {
+		return float64(license.UserLimit)
 	})
 	http.Handle("/metrics", promhttp.Handler())
 	logrus.Info("Now listening on ", listendAddr)
